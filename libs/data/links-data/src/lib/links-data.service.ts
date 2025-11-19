@@ -82,10 +82,9 @@ export class LinksService {
     }
 
     if (filters?.search && filters.search.trim() !== '') {
-      query.andWhere(
-        `(t.title LIKE :search OR t.shortCode LIKE :search OR t.longUrl LIKE :search)`,
-        { search: `%${filters.search}%` }
-      );
+      query.andWhere(`(t.longUrl LIKE :search OR t.shortUrl LIKE :search)`, {
+        search: `%${filters.search}%`,
+      });
     }
 
     query.orderBy('t.createdAt', 'DESC');
