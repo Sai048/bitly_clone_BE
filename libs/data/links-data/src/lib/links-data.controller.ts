@@ -9,6 +9,7 @@ import {
   Redirect,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { LinksService } from './links-data.service';
 import { LinkDataDto, UpdateLinkDto } from './dtos/link-data.dto';
@@ -28,11 +29,49 @@ export class LinksController {
     return this.service.create(linkDataDto);
   }
 
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Get()
   findAll() {
     return this.service.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @Get('user/:userId')
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'fromDate', type: String, required: false })
+  @ApiQuery({ name: 'toDate', type: String, required: false })
+  @ApiQuery({ name: 'search', type: String, required: false })
+  async getByUserId(
+    @Param('userId') userId: number,
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+    @Query('search') search?: string
+  ) {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    const filters: any = {};
+
+  
+    if (fromDate || toDate) {
+      if (fromDate) filters.fromDate = new Date(fromDate);
+      if (toDate) filters.toDate = new Date(toDate);
+    }
+    if (search) {
+      filters.search = search;
+    }
+
+    return this.service.getByUser(
+      userId,
+      pageNumber,
+      limitNumber,
+      filters
+    );
   }
 
   @Get(':code')
@@ -52,8 +91,8 @@ export class LinksController {
     return this.service.update(id, updateLinkDto);
   }
 
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Delete(':code')
   delete(@Param('code') code: string) {
     return this.service.delete(code);
