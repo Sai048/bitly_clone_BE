@@ -47,7 +47,7 @@ export class LinksService {
   }
 
   async findAll() {
-    const res =await this.repo.find();
+    const res = await this.repo.find();
     return {
       HttpStatus: HttpStatus.OK,
       message: 'Data retrived successfully',
@@ -55,21 +55,22 @@ export class LinksService {
     };
   }
 
-   async getByUser(
+  async getByUser(
     userId: number,
     page: number = 1,
     limit: number = 10,
     filters?: {
       fromDate?: string;
       toDate?: string;
-      search?: string
+      search?: string;
     }
   ): Promise<any> {
     const user = await this.repo.findOne({ where: { userId: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-   
-    const query = this.repo.createQueryBuilder('t').where('t.userId = :userId', { userId });
+    const query = this.repo
+      .createQueryBuilder('t')
+      .where('t.userId = :userId', { userId });
     if (filters?.fromDate) {
       query.andWhere('t.createdAt >= :fromDate', {
         fromDate: filters.fromDate,
@@ -80,12 +81,12 @@ export class LinksService {
       query.andWhere('t.createdAt <= :toDate', { toDate: filters.toDate });
     }
 
-     if (filters?.search && filters.search.trim() !== "") {
-    query.andWhere(
-      `(t.title LIKE :search OR t.shortCode LIKE :search OR t.longUrl LIKE :search)`,
-      { search: `%${filters.search}%` }
-    );
-  }
+    if (filters?.search && filters.search.trim() !== '') {
+      query.andWhere(
+        `(t.title LIKE :search OR t.shortCode LIKE :search OR t.longUrl LIKE :search)`,
+        { search: `%${filters.search}%` }
+      );
+    }
 
     query.orderBy('t.createdAt', 'DESC');
     if (page && limit) {
@@ -93,7 +94,6 @@ export class LinksService {
     }
 
     const [data, total] = await query.getManyAndCount();
-
 
     return {
       status: HttpStatus.OK,
@@ -129,6 +129,16 @@ export class LinksService {
       HttpStatus: HttpStatus.OK,
       message: 'Data updated successfully',
       data: updatedLink,
+    };
+  }
+
+  async findOneById(id: number) {
+    const link = await this.repo.findOne({ where: { id } });
+    if (!link) throw new NotFoundException('Link not found');
+    return {
+      HttpStatus: HttpStatus.OK,
+      message: 'Data retrived successfully',
+      data: link,
     };
   }
 

@@ -81,6 +81,11 @@ export class LinksController {
     return { url: link.longUrl, statusCode: 301 };
   }
 
+  @Get(':id')
+  async findOneById(@Param('id') id: number ) {
+    return  await this.service.findOneById(id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   @Put(':id')
