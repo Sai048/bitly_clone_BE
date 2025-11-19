@@ -40,7 +40,7 @@ export class LinksService {
 
     const data = await this.repo.save(newLink);
     return {
-      HttpStatus: HttpStatus.OK,
+      status: HttpStatus.OK,
       message: 'Data created successfully',
       data,
     };
@@ -49,7 +49,7 @@ export class LinksService {
   async findAll() {
     const res = await this.repo.find();
     return {
-      HttpStatus: HttpStatus.OK,
+      status: HttpStatus.OK,
       message: 'Data retrived successfully',
       data: res,
     };
@@ -126,7 +126,7 @@ export class LinksService {
 
     const updatedLink = await this.repo.save(link);
     return {
-      HttpStatus: HttpStatus.OK,
+      status: HttpStatus.OK,
       message: 'Data updated successfully',
       data: updatedLink,
     };
@@ -136,8 +136,8 @@ export class LinksService {
     const link = await this.repo.findOne({ where: { id } });
     if (!link) throw new NotFoundException('Link not found');
     return {
-      HttpStatus: HttpStatus.OK,
-      message: 'Data retrived successfully',
+      status: HttpStatus.OK,
+      message: 'Data retrieved successfully',
       data: link,
     };
   }
@@ -146,7 +146,7 @@ export class LinksService {
     const res = await this.repo.delete({ id: code });
     if (!res.affected) throw new NotFoundException('Code not found');
     return {
-      HttpStatus: HttpStatus.OK,
+      status: HttpStatus.OK,
       message: 'Data deleted successfully',
     };
   }
