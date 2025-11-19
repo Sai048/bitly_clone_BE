@@ -132,8 +132,8 @@ export class LinksService {
     };
   }
 
-  async delete(code: string) {
-    const res = await this.repo.delete({ shortUrl: code });
+  async delete(code: number) {
+    const res = await this.repo.delete({ id: code });
     if (!res.affected) throw new NotFoundException('Code not found');
     return {
       HttpStatus: HttpStatus.OK,

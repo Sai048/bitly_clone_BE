@@ -94,7 +94,7 @@ export class LinksController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   @Delete(':code')
-  delete(@Param('code') code: string) {
+  delete(@Param('code') code: number) {
     return this.service.delete(code);
   }
 }
