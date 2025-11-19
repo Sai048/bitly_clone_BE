@@ -57,7 +57,6 @@ export class LinksController {
 
     const filters: any = {};
 
-  
     if (fromDate || toDate) {
       if (fromDate) filters.fromDate = new Date(fromDate);
       if (toDate) filters.toDate = new Date(toDate);
@@ -66,12 +65,7 @@ export class LinksController {
       filters.search = search;
     }
 
-    return this.service.getByUser(
-      userId,
-      pageNumber,
-      limitNumber,
-      filters
-    );
+    return this.service.getByUser(userId, pageNumber, limitNumber, filters);
   }
 
   @Get(':code')
@@ -80,10 +74,12 @@ export class LinksController {
     const link = await this.service.findOne(code);
     return { url: link.longUrl, statusCode: 301 };
   }
-
+  
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Get(':id')
-  async findOneById(@Param('id') id: number ) {
-    return  await this.service.findOneById(id);
+  async findOneById(@Param('id') id: number) {
+    return await this.service.findOneById(id);
   }
 
   @UseGuards(JwtAuthGuard)
