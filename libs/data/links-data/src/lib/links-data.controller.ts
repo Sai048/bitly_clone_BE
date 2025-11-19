@@ -74,10 +74,10 @@ export class LinksController {
     const link = await this.service.findOne(code);
     return { url: link.longUrl, statusCode: 301 };
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @Get(':id')
+  @Get('id/:id')
   async findOneById(@Param('id') id: number) {
     return await this.service.findOneById(id);
   }
